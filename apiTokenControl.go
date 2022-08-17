@@ -1,6 +1,4 @@
-package main
-
-// package apiTokenControl
+package apiTokenControl
 
 import (
 	"bytes"
@@ -25,17 +23,6 @@ func initialParams(params sInitialParams) (sInitialParams, error) {
 	return params, nil
 }
 
-func main() {
-
-	InitialParams = sInitialParams{
-		Grant_type:    "Grant",
-		Client_id:     "Client",
-		Client_secret: "secret",
-		Code:          "code",
-		Redirect_uri:  "uri",
-	}
-	new_token()
-}
 func new_token() (sToken, error) {
 
 	params, err := initialParams(InitialParams)

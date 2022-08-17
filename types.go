@@ -1,4 +1,4 @@
-package main
+package apiTokenControl
 
 type Items struct {
 	Id             string     `json:"id"`
