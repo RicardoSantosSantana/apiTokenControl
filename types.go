@@ -32,7 +32,7 @@ type ItemsIds struct {
 	Results []string `json:"results"`
 }
 
-type sToken struct {
+type Token struct {
 	Access_token  string `json:"access_token"`
 	Token_type    string `json:"token_type"`
 	Expires_in    int    `json:"expires_in"`
@@ -41,8 +41,7 @@ type sToken struct {
 	Refresh_token string `json:"refresh_token"`
 }
 
-type sInitialParams struct {
-	Grant_type    string `json:"grant_type"`
+type SInitialParams struct {
 	Client_id     string `json:"client_id"`
 	Client_secret string `json:"client_secret"`
 	Code          string `json:"code"`

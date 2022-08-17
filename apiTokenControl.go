@@ -7,31 +7,27 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
-var Token sToken
+//	type SInitialParams struct {
+//	    Grant_type    string `json:"grant_type"`
+//	    Client_id     string `json:"client_id"`
+//	    Client_secret string `json:"client_secret"`
+//	    Code          string `json:"code"`
+//	    Redirect_uri  string `json:"redirect_uri"`
+//	}
+var InitialParams SInitialParams
 
-var InitialParams sInitialParams
-
-func initialParams(params sInitialParams) (sInitialParams, error) {
-
-	if (params == sInitialParams{}) {
-		err := errors.New("initial params not informed")
-		return sInitialParams{}, err
-	}
-
-	return params, nil
-}
-
-func new_token() (sToken, error) {
+func New() (Token, error) {
 
 	params, err := initialParams(InitialParams)
 	if err != nil {
-		return sToken{}, err
+		return Token{}, err
 	}
 
 	body, _ := json.Marshal(map[string]string{
-		"grant_type":    params.Grant_type,
+		"grant_type":    "authorization_code",
 		"client_id":     params.Client_id,
 		"client_secret": params.Client_secret,
 		"code":          params.Code,
@@ -47,9 +43,38 @@ func new_token() (sToken, error) {
 	return token, nil
 }
 
-func response_token(body []byte) (sToken, error) {
+func MakeRefreshToken(s Token) (Token, error) {
 
-	token := sToken{}
+	if strings.Trim(s.Refresh_token, " ") == "" {
+		err := errors.New("impossible generate refresh token, trying get new token")
+		return Token{}, err
+	}
+
+	params, err := initialParams(InitialParams)
+	if err != nil {
+		return Token{}, err
+	}
+
+	body, _ := json.Marshal(map[string]string{
+		"grant_type":    "refresh_token",
+		"client_id":     params.Client_id,
+		"client_secret": params.Client_secret,
+		"refresh_token": s.Refresh_token,
+	})
+
+	token, err_response := response_token(body)
+
+	if err_response != nil {
+		err := errors.New("error on make_refresh_token")
+		return Token{}, err
+	}
+
+	return token, nil
+}
+
+func response_token(body []byte) (Token, error) {
+
+	token := Token{}
 	errorToken := Errors{}
 
 	var url string = "https://api.mercadolibre.com/oauth/token"
@@ -76,7 +101,7 @@ func response_token(body []byte) (sToken, error) {
 		return token, err
 	}
 
-	if (sToken{} == token) {
+	if (Token{} == token) {
 		err := errors.New("Error on call Token |" + string(body))
 		return token, err
 
@@ -84,4 +109,14 @@ func response_token(body []byte) (sToken, error) {
 		return token, nil
 	}
 
+}
+
+func initialParams(params SInitialParams) (SInitialParams, error) {
+
+	if (params == SInitialParams{}) {
+		err := errors.New("initial params not informed")
+		return SInitialParams{}, err
+	}
+
+	return params, nil
 }
