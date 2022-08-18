@@ -1,16 +1,16 @@
 package apiTokenControl
 
 type Items struct {
-	Id             string     `json:"id"`
-	Title          string     `json:"title"`
-	Subtitle       string     `json:"subtitle"`
-	Price          float32    `json:"price"`
-	Base_price     float32    `json:"base_price"`
-	Original_price float32    `json:"original_price"`
-	Permalink      string     `json:"permalink"`
-	Thumbnail      string     `json:"thumbnail"`
-	Pictures       []Pictures `json:"pictures"`
-	Description    Description
+	Id             string      `json:"id"`
+	Title          string      `json:"title"`
+	Subtitle       string      `json:"subtitle"`
+	Price          float32     `json:"price"`
+	Base_price     float32     `json:"base_price"`
+	Original_price float32     `json:"original_price"`
+	Permalink      string      `json:"permalink"`
+	Thumbnail      string      `json:"thumbnail"`
+	Pictures       []Pictures  `json:"pictures"`
+	Description    Description `json:"description"`
 }
 
 type Pictures struct {
