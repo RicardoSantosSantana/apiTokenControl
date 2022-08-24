@@ -50,6 +50,7 @@ func GetItemsDetails(itemId string) (Items, error) {
 	}
 
 	body, err := io.ReadAll(resp.Body)
+
 	if err != nil {
 		return Items{}, err
 	}
