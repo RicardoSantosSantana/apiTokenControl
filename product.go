@@ -1,8 +1,10 @@
 package apiTokenControl
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -95,4 +97,50 @@ func GetItemsDescription(itemId string) (Description, error) {
 
 	defer resp.Body.Close()
 	return description, err
+}
+
+func DeleteAllItems(s Token)(bool, error) {
+		
+	ids, err := Token.GetProductItemsIds(s)
+	
+	if err != nil {
+		panic(err)
+	}
+
+	for i := 0; i < len(ids); i++ {	
+		fmt.Println("https://api.mercadolibre.com/items/" + ids[i])
+		errClosed:=deleteItem(ids[i], `{"status": "closed"}`,s.Access_token)
+
+		if errClosed != nil {
+			return false, errClosed 
+		}
+
+		errDeleted:=deleteItem(ids[i], `{"deleted": "true"}`,s.Access_token)
+
+		if errDeleted != nil {
+			return false, errDeleted 
+		}
+
+	}
+	return true, nil 
+}
+
+func deleteItem(item string, data string, access_token string )(error) {
+
+	url := "https://api.mercadolibre.com/items/" + item
+	 
+	client := &http.Client{}
+
+	req, _ := http.NewRequest("PUT", url, bytes.NewReader([]byte(data)))
+
+	req.Header.Add("Authorization", "Bearer "+ access_token)
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return err 
+	}
+
+	defer resp.Body.Close()
+	return nil 
 }
